@@ -10,8 +10,8 @@ int main() {
 	int numOfGuesses = 0;
 	bool complete = false;
 	int correctGuesses = 0;
-	char wordToGuess = GetWordToGuess();
-	string userGuess;
+	string wordToGuess = GetWordToGuess();
+	char userGuess;
 	std::cout << "Welcome to the Hangman Game!" << endl;
 	std::cout << "Getting your word ..." << endl;
 	std::cout << "Got it! Make your first guess: ";
@@ -38,9 +38,13 @@ int main() {
 }
 
 string GetWordToGuess() {
-
+	return;
 }
 
 bool CheckUserGuess(string guess) {
+	return;
+}
+
+void PrintCurrentString(string[]) {
 
 }

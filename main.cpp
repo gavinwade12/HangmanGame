@@ -6,10 +6,10 @@ bool CheckUserGuess(string);
 void PrintCurrentString(string[]);
 
 int main() {
-	static int ALLOWED_INCORRECT_GUESSES = 8;
+	const int ALLOWED_INCORRECT_GUESSES = 8;
 	int numOfGuesses = 0;
 	bool complete = false;
-	int correctGuesses = 0;
+	int correctGuesses = char[];
 	string wordToGuess = GetWordToGuess();
 	char userGuess;
 	std::cout << "Welcome to the Hangman Game!" << endl;
@@ -41,8 +41,14 @@ string GetWordToGuess() {
 	return;
 }
 
-bool CheckUserGuess(string guess) {
-	return;
+bool CheckUserGuess(char guess, string wordToGuess) {
+	if (wordToGuess.find(guess) != std::string::npos) {
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void PrintCurrentString(string[]) {

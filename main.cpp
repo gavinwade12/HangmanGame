@@ -25,22 +25,22 @@ int main() {
 		correctGuesses += userGuess;
 		std::cout << "Good guess!" << std::endl;
 	}
-	else {
+	else
 		std::cout << "Sorry, that letter isn't in this word." << std::endl;
-	}
 
 	numOfGuesses++;
 
-	while (numOfGuesses <= ALLOWED_INCORRECT_GUESSES && !complete) {
+	while ((numOfGuesses - correctGuesses.length()) < ALLOWED_INCORRECT_GUESSES && !complete) {
 		std::cout << "You've made " << numOfGuesses << " guesses. " << std::endl;
 		std::cout << "You've made " << numOfGuesses - correctGuesses.length() << " incorrect guesses." << std::endl;
 		std::cout << ALLOWED_INCORRECT_GUESSES - (numOfGuesses - correctGuesses.length()) << " left until you lose." << std::endl;
 		std::cout << "Enter your guess: ";
 		std::cin >> userGuess;
 		userGuess = tolower(userGuess);
-		if (CheckUserGuess(userGuess, wordToGuess)) {
+		numOfGuesses++;
+		if (CheckUserGuess(userGuess, wordToGuess))
 			correctGuesses += userGuess;
-		}
+
 		PrintCurrentString(wordToGuess, correctGuesses);
 		if (correctGuesses.length() == wordToGuess.length()) {
 			complete = true;
@@ -48,9 +48,8 @@ int main() {
 		}
 	}
 
-	if (numOfGuesses - correctGuesses.length() == ALLOWED_INCORRECT_GUESSES && !complete) {
-		std::cout << "Sorry, you lose. The word was: " << wordToGuess << "." << std::endl;
-	}
+	if (!complete)
+		std::cout << "Sorry, you lose. The word was: " << wordToGuess << std::endl;
 
 	return 0;
 
@@ -68,13 +67,10 @@ std::string GetWordToGuess() {
 }
 
 bool CheckUserGuess(char guess, std::string wordToGuess) {
-	if (wordToGuess.find(guess) != std::string::npos) {
+	if (wordToGuess.find(guess) != std::string::npos)
 		return true;
-	}
 	else
-	{
 		return false;
-	}
 }
 
 void PrintCurrentString(std::string wordToGuess, std::string correctGuesses) {
@@ -86,12 +82,12 @@ void PrintCurrentString(std::string wordToGuess, std::string correctGuesses) {
 				found = true;
 			}
 		}
-		if (found) {
+		if (found)
 			std::cout << wordToGuess[i];
-		}
-		else {
+		else
 			std::cout << " _ ";
-		}
+
+		found = false;
 	}
 	std::cout << std::endl;
 }

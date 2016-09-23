@@ -3,63 +3,78 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <string>
+#include <ctime>
 
-std::string GetWordToGuess();
-bool CheckUserGuess(char userGuess, std::string wordToGuess);
-void PrintCurrentString(std::string wordToGuess, std::string correctGuesses);
+using namespace std;
+
+string GetWordToGuess();
+string GetDistinctWordToGuess(string wordToGuess);
+bool CheckUserGuess(char userGuess, string wordToGuess);
+void PrintCurrentString(string wordToGuess, string correctGuesses);
 
 int main() {
 	const int ALLOWED_INCORRECT_GUESSES = 8;
 	int numOfGuesses = 0;
 	bool complete = false;
-	std::string wordToGuess = GetWordToGuess();
-	std::transform(wordToGuess.begin(), wordToGuess.end(), wordToGuess.begin(), ::tolower);
-	std::string correctGuesses = "";
+	string wordToGuess = GetWordToGuess();
+	string wordToGuessDistinct = GetDistinctWordToGuess(wordToGuess);
+	transform(wordToGuess.begin(), wordToGuess.end(), wordToGuess.begin(), ::tolower);
+	int numOfCorrectGuesses = 0;
+	string correctGuesses = "";
 	char userGuess;
-	std::cout << "Welcome to the Hangman Game!" << std::endl;
-	std::cout << "Getting your word ..." << std::endl;
-	std::cout << "Got it! The word is " << wordToGuess.length() << " letters long. Make your first guess: ";
-	std::cin >> userGuess;
+	cout << "Welcome to the Hangman Game!" << endl;
+	cout << "Getting your word ..." << endl;
+	cout << "Got it! The word is " << wordToGuess.length() << " letters long. Make your first guess: ";
+	cin >> userGuess;
 	userGuess = tolower(userGuess);
 	if (CheckUserGuess(userGuess, wordToGuess)) {
-		correctGuesses += userGuess;
-		std::cout << "Good guess!" << std::endl;
-	}
-	else {
-		std::cout << "Sorry, that letter isn't in this word." << std::endl;
-	}
-
-	numOfGuesses++;
-
-	while (numOfGuesses <= ALLOWED_INCORRECT_GUESSES && !complete) {
-		std::cout << "You've made " << numOfGuesses << " guesses. " << std::endl;
-		std::cout << "You've made " << numOfGuesses - correctGuesses.length() << " incorrect guesses." << std::endl;
-		std::cout << ALLOWED_INCORRECT_GUESSES - (numOfGuesses - correctGuesses.length()) << " left until you lose." << std::endl;
-		std::cout << "Enter your guess: ";
-		std::cin >> userGuess;
-		userGuess = tolower(userGuess);
-		if (CheckUserGuess(userGuess, wordToGuess)) {
+		if (correctGuesses.find(userGuess) == string::npos)
+		{
 			correctGuesses += userGuess;
 		}
-		PrintCurrentString(wordToGuess, correctGuesses);
-		if (correctGuesses.length() == wordToGuess.length()) {
-			complete = true;
-			std::cout << "You win!" << std::endl;
+		numOfCorrectGuesses++;
+		cout << "Good guess!" << endl;
+	}
+	else {
+		cout << "Sorry, that letter isn't in this word." << endl;
+	}
+	PrintCurrentString(wordToGuess, correctGuesses);
+	numOfGuesses++;
+
+	while (numOfGuesses - numOfCorrectGuesses <= ALLOWED_INCORRECT_GUESSES && !complete) {
+		cout << "You've made " << numOfGuesses << " guesses. " << endl;
+		cout << "You've made " << (numOfGuesses - correctGuesses.length()) << " incorrect guesses." << endl;
+		cout << (ALLOWED_INCORRECT_GUESSES - (numOfGuesses - numOfCorrectGuesses) + 1) << " left until you lose." << endl;
+		cout << "Enter your guess: ";
+		cin >> userGuess;
+		userGuess = tolower(userGuess);
+		if (CheckUserGuess(userGuess, wordToGuess)) {
+			if (correctGuesses.find(userGuess) == string::npos)
+			{
+				correctGuesses += userGuess;
+			}
+			numOfCorrectGuesses++;
 		}
+		PrintCurrentString(wordToGuess, correctGuesses);
+		if (correctGuesses.length() == wordToGuessDistinct.length()) {
+			complete = true;
+			cout << "You win!" << endl;
+		}
+		numOfGuesses++;
 	}
 
-	if (numOfGuesses - correctGuesses.length() == ALLOWED_INCORRECT_GUESSES && !complete) {
-		std::cout << "Sorry, you lose. The word was: " << wordToGuess << "." << std::endl;
+	if (numOfGuesses - numOfCorrectGuesses > ALLOWED_INCORRECT_GUESSES && !complete) {
+		cout << "Sorry, you lose. The word was: " << wordToGuess << "." << endl;
 	}
 
 	return 0;
-
 }
 
-std::string GetWordToGuess() {
-	std::string word;
-	std::ifstream myFile;
+string GetWordToGuess() {
+	string word;
+	ifstream myFile;
 	myFile.open("randomwords.txt");
+	srand(time(NULL));
 	int randomNumber = rand() % 100;
 	for (int i = 0; i < randomNumber; i++) {
 		myFile >> word;
@@ -67,8 +82,20 @@ std::string GetWordToGuess() {
 	return word;
 }
 
-bool CheckUserGuess(char guess, std::string wordToGuess) {
-	if (wordToGuess.find(guess) != std::string::npos) {
+string GetDistinctWordToGuess(string wordToGuess) {
+	string distinct = "";
+	for (int i = 0; i < wordToGuess.length(); i++)
+	{
+		if (distinct.find(wordToGuess[i]) == string::npos)
+		{
+			distinct += wordToGuess[i];
+		}
+	}
+	return distinct;
+}
+
+bool CheckUserGuess(char guess, string wordToGuess) {
+	if (wordToGuess.find(guess) != string::npos) {
 		return true;
 	}
 	else
@@ -77,9 +104,9 @@ bool CheckUserGuess(char guess, std::string wordToGuess) {
 	}
 }
 
-void PrintCurrentString(std::string wordToGuess, std::string correctGuesses) {
+void PrintCurrentString(string wordToGuess, string correctGuesses) {
 	bool found = false;
-	std::cout << "Here is how you're doing so far: ";
+	cout << "Here is how you're doing so far: ";
 	for (int i = 0; i < wordToGuess.length(); i++) {
 		for (int j = 0; j < correctGuesses.length(); j++) {
 			if (wordToGuess[i] == correctGuesses[j]) {
@@ -87,11 +114,12 @@ void PrintCurrentString(std::string wordToGuess, std::string correctGuesses) {
 			}
 		}
 		if (found) {
-			std::cout << wordToGuess[i];
+			cout << wordToGuess[i];
 		}
 		else {
-			std::cout << " _ ";
+			cout << " _ ";
 		}
+		found = false;
 	}
-	std::cout << std::endl;
+	cout << endl;
 }

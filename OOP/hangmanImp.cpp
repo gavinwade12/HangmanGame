@@ -1,5 +1,6 @@
 #include "hangman.h"
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include <ctime>
 #include <typeinfo>
